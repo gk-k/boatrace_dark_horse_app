@@ -1,0 +1,12 @@
+platform :ios, '11.0'
+
+target 'iosApp' do
+  use_frameworks!
+  platform :ios, '14.1'
+  # KMMの共有モジュールを組み込む
+  pod 'composeApp', :path => '../composeApp'
+
+  # Firebaseライブラリを追加
+  pod 'Firebase/Core'
+  pod 'Firebase/Firestore'
+end
