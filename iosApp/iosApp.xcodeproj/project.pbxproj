@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		81B6A554E39AD5020F09D1E1 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17A34F6C38D69024B58B5B58 /* Pods_iosApp.framework */; };
 		997FCBEB2EAF41CA00177CD3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 997FCBEA2EAF41CA00177CD3 /* GoogleService-Info.plist */; };
+		998973E02EB058A000334333 /* launcher_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 998973DF2EB058A000334333 /* launcher_icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -16,6 +17,7 @@
 		2408412292B8FBCFCDEDE318 /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 		97F8B50997E910254010CD14 /* DarkHorseApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DarkHorseApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		997FCBEA2EAF41CA00177CD3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		998973DF2EB058A000334333 /* launcher_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launcher_icon.png; sourceTree = "<group>"; };
 		D20A2662CD3FE13246E826F9 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -32,8 +34,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B517AFCF9F1DC0AB7AD52F12 /* Configuration */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = Configuration;
 			sourceTree = "<group>";
 		};
@@ -62,6 +62,7 @@
 		05BC130572FB9D00F96152FA = {
 			isa = PBXGroup;
 			children = (
+				998973DE2EB0589000334333 /* icons */,
 				B517AFCF9F1DC0AB7AD52F12 /* Configuration */,
 				E7F739B0F76FFE8192B8D4EC /* iosApp */,
 				0EFCE93802534643589BED8A /* Products */,
@@ -85,6 +86,14 @@
 				17A34F6C38D69024B58B5B58 /* Pods_iosApp.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		998973DE2EB0589000334333 /* icons */ = {
+			isa = PBXGroup;
+			children = (
+				998973DF2EB058A000334333 /* launcher_icon.png */,
+			);
+			path = icons;
 			sourceTree = "<group>";
 		};
 		B65EBF046F4476B13AE936F0 /* Pods */ = {
@@ -162,6 +171,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				998973E02EB058A000334333 /* launcher_icon.png in Resources */,
 				997FCBEB2EAF41CA00177CD3 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -177,9 +187,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -235,9 +249,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

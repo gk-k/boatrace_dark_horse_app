@@ -23,10 +23,14 @@ class RaceViewModel : ViewModel() {
     private val _ranking = MutableStateFlow<List<Int>>(emptyList())
     val ranking = _ranking.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     private val firestore = Firebase.firestore
 
     fun fetchDates() {
         viewModelScope.launch {
+            _isRefreshing.value = true
             try {
                 // Path: /predictions/dark_horse/race_date
                 val snapshot = firestore.collection("predictions/dark_horse/race_date").orderBy("race_date",
@@ -35,12 +39,15 @@ class RaceViewModel : ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 _dates.value = emptyList()
+            } finally {
+                _isRefreshing.value = false
             }
         }
     }
 
     fun fetchPlaces(date: String) {
         viewModelScope.launch {
+            _isRefreshing.value = true
             try {
                 // Path: /predictions/dark_horse/race_date/{date}/place
                 val snapshot = firestore.collection("predictions/dark_horse/race_date/$date/place").get()
@@ -48,12 +55,15 @@ class RaceViewModel : ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 _places.value = emptyList()
+            } finally {
+                _isRefreshing.value = false
             }
         }
     }
 
     fun fetchRaces(date: String, place: String) {
         viewModelScope.launch {
+            _isRefreshing.value = true
             try {
                 // Path: /predictions/dark_horse/race_date/{date}/place/{place}/races
                 val snapshot =
@@ -62,12 +72,15 @@ class RaceViewModel : ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 _races.value = emptyList()
+            } finally {
+                _isRefreshing.value = false
             }
         }
     }
 
     fun fetchRanking(date: String, place: String, race: String) {
         viewModelScope.launch {
+            _isRefreshing.value = true
             try {
                 // Path: /predictions/dark_horse/race_date/{date}/place/{place}/races/{race}
                 val raceDocument =
@@ -83,6 +96,8 @@ class RaceViewModel : ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 _ranking.value = emptyList()
+            } finally {
+                _isRefreshing.value = false
             }
         }
     }
