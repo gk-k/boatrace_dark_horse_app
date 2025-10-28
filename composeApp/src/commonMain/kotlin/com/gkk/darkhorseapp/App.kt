@@ -1,76 +1,98 @@
 package com.gkk.darkhorseapp
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import darkhorseapp.composeapp.generated.resources.Res
-import darkhorseapp.composeapp.generated.resources.compose_multiplatform
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.firestore.firestore
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.gkk.darkhorseapp.ui.DateScreen
+import com.gkk.darkhorseapp.ui.PlaceScreen
+import com.gkk.darkhorseapp.ui.RaceListScreen
+import com.gkk.darkhorseapp.ui.RankingScreen
+import com.gkk.darkhorseapp.viewmodel.RaceViewModel
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        // Firestore state
-        var firestoreMessage by remember { mutableStateOf("Not connected") }
-        val coroutineScope = rememberCoroutineScope()
+        val viewModel = remember { RaceViewModel() }
 
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
+        var selectedDate by remember { mutableStateOf<String?>(null) }
+        var selectedPlace by remember { mutableStateOf<String?>(null) }
+        var selectedRace by remember { mutableStateOf<String?>(null) }
 
-            // Firestore Test Button and Text
-            Button(onClick = {
-                coroutineScope.launch {
-                    try {
-                        firestoreMessage = "Connecting..."
-                        val firestore = Firebase.firestore
-                        val data = mapOf("field" to "Hello, iOS & Android!")
-                        // Add a document to a "test" collection
-                        firestore.collection("test").document("doc").set(data)
-                        // Read the document
-                        val doc = firestore.collection("test").document("doc").get()
-                        firestoreMessage = "Firestore says: '${doc.get<String>("field")}'"
-                    } catch (e: Exception) {
-                        firestoreMessage = "Error: ${e.message}"
+        val path = listOfNotNull(selectedDate, selectedPlace, selectedRace).joinToString(" / ")
+
+        val onBack: (() -> Unit)? = when {
+            selectedRace != null -> {
+                { selectedRace = null }
+            }
+            selectedPlace != null -> {
+                { selectedPlace = null }
+            }
+            selectedDate != null -> {
+                { selectedDate = null }
+            }
+            else -> null
+        }
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(path) },
+                    navigationIcon = {
+                        if (onBack != null) {
+                            IconButton(onClick = onBack) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            }
+                        }
+                    }
+                )
+            }
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            ) {
+                when {
+                    selectedDate == null -> {
+                        DateScreen(viewModel) { date ->
+                            selectedDate = date
+                            selectedPlace = null
+                            selectedRace = null
+                        }
+                    }
+                    selectedPlace == null -> {
+                        PlaceScreen(viewModel, selectedDate!!) { place ->
+                            selectedPlace = place
+                            selectedRace = null
+                        }
+                    }
+                    selectedRace == null -> {
+                        RaceListScreen(viewModel, selectedDate!!, selectedPlace!!) { race ->
+                            selectedRace = race
+                        }
+                    }
+                    else -> {
+                        RankingScreen(viewModel, selectedDate!!, selectedPlace!!, selectedRace!!)
                     }
                 }
-            }) {
-                Text("Connect to Firestore")
             }
-            Text(firestoreMessage)
         }
     }
 }
