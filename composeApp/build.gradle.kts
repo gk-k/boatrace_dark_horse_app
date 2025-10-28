@@ -23,6 +23,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(compose.runtime)
+            api(compose.components.resources) // 'BackHandler' is part of the components
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.material3)

@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import com.gkk.darkhorseapp.ui.DateScreen
 import com.gkk.darkhorseapp.ui.PlaceScreen
 import com.gkk.darkhorseapp.ui.RaceListScreen
-import com.gkk.darkhorseapp.ui.RankingScreen
 import com.gkk.darkhorseapp.viewmodel.RaceViewModel
 
 
@@ -33,14 +32,10 @@ fun App() {
 
         var selectedDate by remember { mutableStateOf<String?>(null) }
         var selectedPlace by remember { mutableStateOf<String?>(null) }
-        var selectedRace by remember { mutableStateOf<String?>(null) }
 
-        val path = listOfNotNull(selectedDate, selectedPlace, selectedRace).joinToString(" / ")
+        val path = listOfNotNull(selectedDate, selectedPlace).joinToString(" / ")
 
         val onBack: (() -> Unit)? = when {
-            selectedRace != null -> {
-                { selectedRace = null }
-            }
             selectedPlace != null -> {
                 { selectedPlace = null }
             }
@@ -74,22 +69,15 @@ fun App() {
                         DateScreen(viewModel) { date ->
                             selectedDate = date
                             selectedPlace = null
-                            selectedRace = null
                         }
                     }
                     selectedPlace == null -> {
-                        PlaceScreen(viewModel, selectedDate!!) { place ->
+                        PlaceScreen(viewModel, selectedDate!!, onPlaceSelected = { place ->
                             selectedPlace = place
-                            selectedRace = null
-                        }
-                    }
-                    selectedRace == null -> {
-                        RaceListScreen(viewModel, selectedDate!!, selectedPlace!!) { race ->
-                            selectedRace = race
-                        }
+                        }, onBack = { selectedDate = null })
                     }
                     else -> {
-                        RankingScreen(viewModel, selectedDate!!, selectedPlace!!, selectedRace!!)
+                        RaceListScreen(viewModel, selectedDate!!, selectedPlace!!, onBack = { selectedPlace = null })
                     }
                 }
             }

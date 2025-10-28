@@ -17,11 +17,8 @@ class RaceViewModel : ViewModel() {
     private val _places = MutableStateFlow<List<String>>(emptyList())
     val places = _places.asStateFlow()
 
-    private val _races = MutableStateFlow<List<String>>(emptyList())
+    private val _races = MutableStateFlow<Map<String, List<Int>>>(emptyMap())
     val races = _races.asStateFlow()
-
-    private val _ranking = MutableStateFlow<List<Int>>(emptyList())
-    val ranking = _ranking.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
@@ -68,34 +65,15 @@ class RaceViewModel : ViewModel() {
                 // Path: /predictions/dark_horse/race_date/{date}/place/{place}/races
                 val snapshot =
                     firestore.collection("predictions/dark_horse/race_date/$date/place/$place/races").get()
-                _races.value = snapshot.documents.map { it.id }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _races.value = emptyList()
-            } finally {
-                _isRefreshing.value = false
-            }
-        }
-    }
-
-    fun fetchRanking(date: String, place: String, race: String) {
-        viewModelScope.launch {
-            _isRefreshing.value = true
-            try {
-                // Path: /predictions/dark_horse/race_date/{date}/place/{place}/races/{race}
-                val raceDocument =
-                    firestore.document("predictions/dark_horse/race_date/$date/place/$place/races/$race").get()
-
-                if (raceDocument.exists) {
-                    // Assuming the document has a "ranking" field of type Array<Number>
-                    val rankingList = raceDocument.get("ranking") as? List<Long> ?: emptyList()
-                    _ranking.value = rankingList.map { it.toInt() }
-                } else {
-                     _ranking.value = emptyList()
+                val racesMap = mutableMapOf<String, List<Int>>()
+                snapshot.documents.forEach { document ->
+                    val rankingList = document.get("ranking") as? List<Long> ?: emptyList()
+                    racesMap[document.id] = rankingList.map { it.toInt() }
                 }
+                _races.value = racesMap
             } catch (e: Exception) {
                 e.printStackTrace()
-                _ranking.value = emptyList()
+                _races.value = emptyMap()
             } finally {
                 _isRefreshing.value = false
             }
